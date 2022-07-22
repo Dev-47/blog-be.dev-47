@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  mongo:
+    build:
+      context: .
+      dockerfile: ${PWD}/.docker/mongo/Dockerfile
+    volumes:
+      - ${PWD}/.docker/mongo/data:/data/db
+    ports:
+      - 27017:27017
+    env_file:
+      - .env
+    logging:
+      driver: none
+
+  node:
+    build:
+      context: .
+      dockerfile: ${PWD}/.docker/node/Dockerfile
+    volumes:
+      - .:/code/
+    env_file:
+      - .env
+    ports:
+      - 8000:8000
+    depends_on:
+      - mongo
+    command: yarn dev
